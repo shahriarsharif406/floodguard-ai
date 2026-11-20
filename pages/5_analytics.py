@@ -69,5 +69,21 @@ with b:
                                             showarrow=False, font=dict(color="#8FA3C0"))])
     st.plotly_chart(ui.style_fig(fig), width="stretch")
     st.caption("Correlation shown for context; reports are simulated." if state.mode() == "replay" else "Context only.")
+if state.mode() == "replay":
+    from floodguard.rain import daily_precip
+
+    @st.cache_data(ttl=6 * 3600, show_spinner="Fetching rainfall…")
+    def _rain_june22():
+        return daily_precip(25.07, 91.40, "2022-06-10", "2022-06-30")
+    rs = _rain_june22()
+    if rs.get("time"):
+        fig = go.Figure(go.Bar(x=rs["time"], y=rs["mm"], marker_color="#3FD0E0", name="Rainfall (mm/day)"))
+        cnt = df.groupby("day").size().reset_index(name="n")
+        fig.add_trace(go.Scatter(x=cnt.day, y=cnt.n, mode="markers", name="Reports", yaxis="y2",
+                                 marker=dict(color="#FFB547", size=10)))
+        fig.update_layout(title="Daily rainfall vs reports (Sunamganj)", yaxis2=dict(overlaying="y", side="right",
+                                                                                     showgrid=False))
+        st.plotly_chart(ui.style_fig(fig), width="stretch")
+        st.caption("Rainfall: Open-Meteo Historical Weather API. Context only; reports are simulated.")
 eng = df.engine.value_counts().to_dict()
 st.caption("Analyses: " + ", ".join(f"{v} {ui.chip_engine(k).split('>')[1].split('<')[0]}" for k, v in eng.items()))

@@ -106,5 +106,50 @@ with R:
         st.markdown(f'<div class="mono" style="font-size:12px;border-bottom:1px solid #22324F;padding:4px 0">'
                     f'{ui.e(a["ts"][:19])} · {ui.e(a["actor"])} · {ui.e(a["action"])}{ui.e(arrow)}'
                     f'<br><span style="color:#8FA3C0">{ui.e(a["note"] or "")}</span></div>', unsafe_allow_html=True)
+if not st.session_state.get("mod_judge") and state.mode() == "replay":
+    from floodguard.config import get_settings
+    _s = get_settings()
+    with st.expander("Admin · upgrade replay reports with Gemini"):
+        st.caption("Re-analyses the redacted replay texts with Gemini (daily cap applies). Updates this running "
+                   "instance and gives a JSON you can commit as data/gemini_cache.json.")
+        if not _s.gemini_api_key:
+            st.info("No Gemini key configured.")
+        elif st.button("Run Gemini on replay reports"):
+            import json as _json, time as _t
+            from floodguard.analysis import cache_key
+            from floodguard.gemini import GeminiUnavailable, bump_daily, call_gemini, caps_allow
+            from floodguard.redact import redact
+            items, done, failed = {}, 0, 0
+            bar = st.progress(0.0)
+            rows = [x for x in conn.execute("SELECT id FROM reports WHERE mode='replay'")]
+            for i, row in enumerate(rows):
+                rid = row["id"]
+                raw_r = db.get_raw(conn, rid)
+                red, _ = redact(raw_r["raw_text"])
+                ok, why = caps_allow(0, conn, _s)
+                if not ok:
+                    st.warning(f"Stopped: {why}"); break
+                bump_daily(conn)
+                try:
+                    a = call_gemini(red, db.get_report(conn, rid)["district"], _s)
+                except GeminiUnavailable as ex:
+                    failed += 1; st.caption(f"#{rid}: {ex}"); continue
+                db.insert_analysis(conn, rid, a)
+                db.audit(conn, rid, "ai_analyzed", Actor.AI, a.engine.value, a.summary_en)
+                db.recompute_priority(conn, rid)
+                items[cache_key(red, _s.gemini_model)] = {
+                    "category": a.category.value, "urgency": a.urgency.value, "needs": a.needs,
+                    "people_affected": a.people_affected, "summary_en": a.summary_en, "summary_bn": a.summary_bn,
+                    "location_hint": a.location_hint, "language": a.language, "confidence": a.confidence}
+                done += 1; bar.progress((i + 1) / len(rows)); _t.sleep(1)
+            st.success(f"{done} upgraded, {failed} failed.")
+            if items:
+                from datetime import date as _dd
+                st.session_state["gem_cache_json"] = _json.dumps(
+                    {"meta": {"model": _s.gemini_model, "generated_on": _dd.today().isoformat()}, "items": items},
+                    ensure_ascii=False, indent=1)
+        if st.session_state.get("gem_cache_json"):
+            st.download_button("Download gemini_cache.json", st.session_state["gem_cache_json"],
+                               "gemini_cache.json", "application/json")
 if st.button("Lock desk"):
     st.session_state["mod_ok"] = False; st.rerun()

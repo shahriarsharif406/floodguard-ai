@@ -4,7 +4,7 @@
 
 Built for the **STEM2Connect AI Hackathon 2026** · Track: Community Impact · Bangladesh-first, usable anywhere.
 
-> 🔗 Live demo: _(add Streamlit URL)_ · 🎬 Demo video: _(add YouTube URL)_ · 📝 Devpost: _(add URL)_
+> 🔗 Live demo: https://floodguard-ai-sylhet.streamlit.app/ · 🎬 Demo video: _(YouTube link, added before submission)_ · 📝 Devpost: https://stem2connect-online-hackathon.devpost.com/
 
 ![Command Center](docs/screenshots/01_command_center.png)
 
@@ -19,6 +19,8 @@ Built for the **STEM2Connect AI Hackathon 2026** · Track: Community Impact · B
 - **Sets each report against NASA satellite flood imagery and GloFAS river-discharge context** ("evidence is context, never proof").
 - **Human moderators** verify or reject. AI can never mark a report verified. Every action is audited.
 - **Responders** get a prioritised map, analytics and a one-click situation report.
+- **Adds rainfall context**: NASA IMERG rainfall layer on the map, plus daily rainfall (Open-Meteo) per report and in Analytics.
+- **Exports** reports as CSV or GeoJSON, and a one-click situation report.
 - **Event Replay**: the June 2022 Sylhet–Sunamganj flood with real NASA/GloFAS data and clearly labelled **SIMULATED** reports.
 
 ## How it works
@@ -48,7 +50,7 @@ Works with **no keys and no internet** in replay mode (rule-based + cached data)
 Optional data refresh (needs internet, run locally): `python scripts/check_sources.py`, `python scripts/precompute_evidence.py`, `python scripts/precompute_gemini.py` (needs your key), `python scripts/run_eval.py`.
 
 ## Data sources and honesty
-- **Real:** NASA GIBS MODIS flood product (MCDWD, ~250 m) and Terra true colour; GloFAS v4 modelled river discharge via Open-Meteo.
+- **Real:** NASA GIBS MODIS flood product (MCDWD, ~250 m) and Terra true colour; GloFAS v4 modelled river discharge and daily rainfall via Open-Meteo; NASA IMERG rainfall layer.
 - **Simulated:** every Event Replay report and every shelter (tagged SIMULATED / DEMO in the app, exports and video).
 - Not a flood predictor. Satellite pixels miss small, flash and under-canopy flooding and can show cloud-shadow false positives.
 

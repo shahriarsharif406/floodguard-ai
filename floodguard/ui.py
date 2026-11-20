@@ -128,7 +128,7 @@ def build_map(reports: list[dict], *, date: str, layers: dict[str, bool], shelte
     for key, on in layers.items():
         if on and key in LAYERS:
             L = LAYERS[key]
-            folium.TileLayer(tiles=tile_url(key, date), attr="NASA GIBS / LANCE MODIS", name=L["label"], overlay=True,
+            folium.TileLayer(tiles=tile_url(key, date), attr="NASA GIBS (MODIS / IMERG)", name=L["label"], overlay=True,
                              control=True, opacity=L["opacity"], max_native_zoom=L["max_native"], max_zoom=12).add_to(m)
     for r in reports:
         lat, lon = (r["lat"], r["lon"]) if exact else (r["lat_pub"], r["lon_pub"])

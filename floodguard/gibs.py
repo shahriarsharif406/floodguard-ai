@@ -16,6 +16,8 @@ LAYERS: dict[str, dict] = {
     "truecolor": {"id": "MODIS_Terra_CorrectedReflectance_TrueColor", "ext": "jpg",
                   "matrix": "GoogleMapsCompatible_Level9", "max_native": 9, "label": "MODIS Terra true colour",
                   "opacity": 1.0},
+    "imerg": {"id": "IMERG_Precipitation_Rate", "ext": "png", "matrix": "GoogleMapsCompatible_Level6",
+              "max_native": 6, "label": "NASA IMERG rainfall rate (~10 km)", "opacity": 0.55},
 }
 BASE = "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best"
 SAMPLES = Path(__file__).resolve().parent.parent / "data" / "gibs_samples.json"

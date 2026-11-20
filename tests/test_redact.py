@@ -31,3 +31,10 @@ def test_sunamganj_not_mangled():
     assert "সুনামগঞ্জ" in out and c["name"] == 0
     out, c = redact("আমার নাম করিম, সিলেট")
     assert "[NAME]" in out and "করিম" not in out
+
+
+def test_rain_sentence():
+    from floodguard.rain import rain_sentence
+    s = {"time": ["2022-06-18", "2022-06-19", "2022-06-20"], "mm": [10.0, 20.0, 5.0]}
+    assert "35 mm over the last 3 days" in rain_sentence(s, "2022-06-20")
+    assert rain_sentence(s, "2023-01-01") is None

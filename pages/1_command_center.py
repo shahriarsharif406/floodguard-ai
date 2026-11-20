@@ -45,7 +45,8 @@ with right:
     st.caption(f"Flood layer = composite of {date} and the day before (NASA MODIS, ~250 m)")
     layers = {
         "flood2": st.checkbox("Flood 2-day", True), "flood3": st.checkbox("Flood 3-day", False),
-        "truecolor": st.checkbox("True colour", False)}
+        "truecolor": st.checkbox("True colour", False),
+        "imerg": st.checkbox("Rainfall (IMERG)", False)}
     show_sh = st.checkbox("Shelters (DEMO)", True)
     st.markdown('<div class="legend" style="font-size:12px;color:#8FA3C0;margin:6px 0">'
                 '<div><span style="background:#ff2b2b"></span>Flood (unusual water)</div>'

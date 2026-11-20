@@ -83,6 +83,16 @@ with R:
                f'<br>GloFAS = modelled discharge, not a gauge reading.</div>')
     st.markdown(ui.card("Satellite & river evidence", ev_html), unsafe_allow_html=True)
     date = r["created_at"][:10]
+    try:
+        from datetime import date as _d, timedelta
+        from floodguard.rain import daily_precip, rain_sentence
+        d0 = (_d.fromisoformat(date) - timedelta(days=5)).isoformat()
+        rs = daily_precip(r["lat_pub"], r["lon_pub"], d0, date)
+        rt = rain_sentence(rs, date)
+        if rt:
+            st.caption("🌧 " + rt)
+    except Exception:  # noqa: BLE001  (rainfall is optional context)
+        pass
     ser = series_for(r["lat_pub"], r["lon_pub"], date, live=True)
     sp = sparkline_data(ser, date) if ser else None
     if sp:

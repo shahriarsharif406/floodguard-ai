@@ -5,3 +5,5 @@
 - Fonts: Chakra Petch, IBM Plex Sans/Mono, Noto Sans Bengali (Google Fonts, SIL OFL).
 - Event facts: UN RCO Bangladesh situation update (22 Jun 2022); IFRC final report MDRBD028 (ReliefWeb).
 - AI: Google Gemini (in-product), Anthropic Claude / Claude Code (development).
+
+- Rainfall rate layer: NASA GPM IMERG via GIBS. Daily rainfall totals: Open-Meteo Historical Weather API (open-meteo.com). Both are context only.
