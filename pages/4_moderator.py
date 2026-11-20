@@ -17,7 +17,8 @@ def _lockout() -> dict:       # server-wide, survives page reloads
 
 lk = _lockout()
 st.session_state.setdefault("mod_ok", False)
-if not s.moderator_pin:
+JUDGE_OK = state.mode() == "replay"   # judge preview is offered on replay (demo) data only
+if not s.moderator_pin and not JUDGE_OK:
     st.error("Moderator PIN is not configured on this deployment (set MODERATOR_PIN in secrets).")
     st.stop()
 
@@ -25,8 +26,16 @@ if not st.session_state["mod_ok"]:
     lock = lk["until"] - time.time()
     st.markdown(ui.banner("info", "Only a human moderator can verify or reject reports. AI can suggest, never decide."),
                 unsafe_allow_html=True)
+    if JUDGE_OK:
+        st.markdown(ui.banner("info", "Judges and visitors: you can explore the desk on the June 2022 replay data "
+                                      "(simulated reports) without a PIN. Live mode always needs the PIN."),
+                    unsafe_allow_html=True)
+        if st.button("Open judge preview (replay data only)"):
+            st.session_state["mod_ok"] = True
+            st.session_state["mod_judge"] = True
+            st.rerun()
     pin = st.text_input("Moderator PIN", type="password")
-    if st.button("Unlock", type="primary", disabled=lock > 0):
+    if st.button("Unlock", type="primary", disabled=lock > 0 or not s.moderator_pin):
         if hmac.compare_digest(pin.encode(), s.moderator_pin.encode()):
             st.session_state["mod_ok"] = True
             lk["fail"] = 0
@@ -41,6 +50,13 @@ if not st.session_state["mod_ok"]:
         st.warning(f"Too many attempts. Try again in {int(lock)} s.")
     st.stop()
 
+if st.session_state.get("mod_judge") and state.mode() != "replay":
+    st.session_state["mod_ok"] = False       # judge preview never carries over to live mode
+    st.session_state["mod_judge"] = False
+    st.rerun()
+if st.session_state.get("mod_judge"):
+    st.markdown(ui.banner("warn", "Judge preview: replay data only. Actions here are audited like real ones."),
+                unsafe_allow_html=True)
 reports = db.list_reports(conn, mode=state.mode(), until=state.until())
 f1, f2 = st.columns(2)
 fs = f1.multiselect("Status", [x.value for x in Status], default=["pending", "under_review"])
