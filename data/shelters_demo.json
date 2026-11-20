@@ -1,0 +1,92 @@
+[
+ {
+  "id": 1,
+  "name": "Sunamganj Govt. High School (DEMO)",
+  "name_bn": "সুনামগঞ্জ সরকারি উচ্চ বিদ্যালয়",
+  "lat": 25.068,
+  "lon": 91.402,
+  "district": "Sunamganj",
+  "is_demo": 1
+ },
+ {
+  "id": 2,
+  "name": "Chhatak Pilot School (DEMO)",
+  "name_bn": "ছাতক পাইলট স্কুল",
+  "lat": 25.04,
+  "lon": 91.672,
+  "district": "Sunamganj",
+  "is_demo": 1
+ },
+ {
+  "id": 3,
+  "name": "Companiganj Upazila Complex (DEMO)",
+  "name_bn": "কোম্পানীগঞ্জ উপজেলা কমপ্লেক্স",
+  "lat": 25.058,
+  "lon": 91.77,
+  "district": "Sylhet",
+  "is_demo": 1
+ },
+ {
+  "id": 4,
+  "name": "Gowainghat College (DEMO)",
+  "name_bn": "গোয়াইনঘাট কলেজ",
+  "lat": 25.103,
+  "lon": 91.975,
+  "district": "Sylhet",
+  "is_demo": 1
+ },
+ {
+  "id": 5,
+  "name": "Kanaighat Govt. Primary School (DEMO)",
+  "name_bn": "কানাইঘাট সরকারি প্রাথমিক বিদ্যালয়",
+  "lat": 25.002,
+  "lon": 92.258,
+  "district": "Sylhet",
+  "is_demo": 1
+ },
+ {
+  "id": 6,
+  "name": "Sylhet MC College (DEMO)",
+  "name_bn": "সিলেট এমসি কলেজ",
+  "lat": 24.906,
+  "lon": 91.898,
+  "district": "Sylhet",
+  "is_demo": 1
+ },
+ {
+  "id": 7,
+  "name": "Zakiganj Govt. College (DEMO)",
+  "name_bn": "জকিগঞ্জ সরকারি কলেজ",
+  "lat": 24.88,
+  "lon": 92.365,
+  "district": "Sylhet",
+  "is_demo": 1
+ },
+ {
+  "id": 8,
+  "name": "Jagannathpur High School (DEMO)",
+  "name_bn": "জগন্নাথপুর উচ্চ বিদ্যালয়",
+  "lat": 24.77,
+  "lon": 91.548,
+  "district": "Sunamganj",
+  "is_demo": 1
+ },
+ {
+  "id": 9,
+  "name": "Derai Upazila Complex (DEMO)",
+  "name_bn": "দিরাই উপজেলা কমপ্লেক্স",
+  "lat": 24.787,
+  "lon": 91.35,
+  "district": "Sunamganj",
+  "is_demo": 1
+ },
+ {
+  "id": 10,
+  "name": "Kalmakanda Upazila Complex (DEMO)",
+  "name_bn": "কলমাকান্দা উপজেলা কমপ্লেক্স",
+  "lat": 25.08,
+  "lon": 90.88,
+  "district": "Netrakona",
+  "is_demo": 1
+ }
+]
