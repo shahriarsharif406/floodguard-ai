@@ -30,6 +30,6 @@ with b:
         "(pre-computed)</i> or <i>Rule-based fallback</i>.<br><b>In building it:</b> Anthropic's Claude (Claude Code) "
         "helped plan and write the code under the author's direction."), unsafe_allow_html=True)
     st.markdown(ui.card("Credits",
-        "NASA GIBS / LANCE · GloFAS (Copernicus) via Open-Meteo · Esri World Dark Gray Base (© Esri, HERE, Garmin, OpenStreetMap contributors) · Google Fonts. "
+        "NASA GIBS / LANCE · GloFAS (Copernicus) via Open-Meteo · © OpenStreetMap contributors · Google Fonts. "
         "Event facts: UN RCO Bangladesh (22 Jun 2022), IFRC MDRBD028."), unsafe_allow_html=True)
 st.markdown('<div class="footer">Evidence is context, never proof. A human moderator decides.</div>', unsafe_allow_html=True)

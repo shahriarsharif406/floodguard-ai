@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 from floodguard import db, state, ui
-from floodguard.ui import BASEMAP, BASEMAP_ATTR
+from floodguard.ui import BASEMAP, BASEMAP_ATTR, BASE_CSS
 from floodguard.geo import nearest_shelter
 from floodguard.river import anomaly, series_for, sparkline_data
 from floodguard.service import refresh_evidence
@@ -101,7 +101,8 @@ with R:
         st.markdown(ui.card("Nearest shelter (DEMO data)", f'{ui.e(sh["name"])} — {km:.1f} km straight-line'),
                     unsafe_allow_html=True)
     m = folium.Map(location=(r["lat_pub"], r["lon_pub"]), zoom_start=11, tiles=None)
-    folium.TileLayer(BASEMAP, attr=BASEMAP_ATTR).add_to(m)
+    folium.TileLayer(BASEMAP, attr=BASEMAP_ATTR, className="fg-base").add_to(m)
+    m.get_root().header.add_child(folium.Element(BASE_CSS))
     folium.CircleMarker((r["lat_pub"], r["lon_pub"]), radius=ui.URGENCY_RADIUS[r["urgency"]], fill=True,
                         fill_color=ui.URGENCY_COLOR[r["urgency"]], color="#FFB547").add_to(m)
     st_folium(m, height=220, use_container_width=True, returned_objects=[], key=f"mini_{rid}")

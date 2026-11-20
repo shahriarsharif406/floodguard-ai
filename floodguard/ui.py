@@ -6,8 +6,10 @@ from .evidence import FOOTER, LABEL
 from .gibs import LAYERS, tile_url
 from .models import CATEGORY_LABEL
 
-BASEMAP = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
-BASEMAP_ATTR = "Tiles © Esri — Esri, HERE, Garmin, OpenStreetMap contributors"
+BASEMAP = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"   # darkened with a CSS filter (class fg-base)
+BASEMAP_ATTR = "© OpenStreetMap contributors"
+BASE_CSS = ("<style>.fg-base{filter:invert(1) hue-rotate(190deg) brightness(.82) contrast(.95) saturate(.55)}"
+            ".leaflet-container{background:#0b1220}</style>")
 URGENCY_COLOR = {"critical": "#FF5A5F", "high": "#FF9F43", "medium": "#F4D35E", "low": "#7FB7A4"}
 URGENCY_RADIUS = {"critical": 11, "high": 9, "medium": 7, "low": 6}
 
@@ -121,7 +123,8 @@ def category_label(c: str) -> str:
 def build_map(reports: list[dict], *, date: str, layers: dict[str, bool], shelters: list[dict] | None = None,
               exact: bool = False, center=(24.95, 91.65), zoom: int = 9) -> folium.Map:
     m = folium.Map(location=center, zoom_start=zoom, tiles=None, control_scale=True)
-    folium.TileLayer(BASEMAP, name="Base (dark)", attr=BASEMAP_ATTR).add_to(m)
+    folium.TileLayer(BASEMAP, name="Base (dark)", attr=BASEMAP_ATTR, className="fg-base").add_to(m)
+    m.get_root().header.add_child(folium.Element(BASE_CSS))
     for key, on in layers.items():
         if on and key in LAYERS:
             L = LAYERS[key]
