@@ -17,3 +17,9 @@ def test_email_name_id():
 def test_counts_untouched():
     out, c = redact("30 people and 6 families need food")
     assert out == "30 people and 6 families need food" and sum(c.values()) == 0
+
+
+def test_spaced_phone_formats():
+    for t in ["017 1234 5678", "+880 1712-345678", "01712 345678"]:
+        out, _ = redact(f"call {t} please")
+        assert "[PHONE]" in out and "1234" not in out and "345678" not in out, out

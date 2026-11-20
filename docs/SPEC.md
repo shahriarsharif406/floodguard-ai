@@ -792,3 +792,7 @@ pytest>=8   # dev only (keep; harmless)
 3. Should the brand line under the logo read "by Anvia Labs"? (Default: no brand line, to keep judging neutral.)
 4. Moderator PIN for the public deployment: share it with judges on Devpost? (Default: yes. Put a judge PIN in the Devpost "Try it out" notes, not in the repo.)
 5. Narrate the video yourself in English with Bangla snippets, or use TTS? (Default: own voice. Authenticity helps the "Learning" score.)
+
+
+---
+**Implementation notes (post-review):** §5.4 row `NA/NA` and `NA/NO_CELL` now return UNAVAILABLE (more honest than "river flow normal"); a failed river fetch is `unavailable`, never `no_river_cell`; GIBS HTTP 404 is `unavailable`, never "cloud". Evidence calls use blurred (~500 m) coordinates. Gemini calls disable thinking (`thinkingBudget: 0`) and retry once without it on HTTP 400. Map popups have no deep link (iframe sandbox); reports open from the "Open report" selector.

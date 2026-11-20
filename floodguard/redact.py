@@ -6,7 +6,7 @@ _BN_DIGITS = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 URL = re.compile(r"https?://\S+|www\.\S+")
-BD_PHONE = re.compile(r"(?<!\d)(?:\+?88[\s-]?)?0?1[3-9]\d{2}[\s-]?\d{3}[\s-]?\d{3}(?!\d)")
+BD_PHONE = re.compile(r"(?<!\d)(?:\+?88[\s-]?0?[\s-]?|0)?1[3-9](?:[\s-]?\d){8}(?!\d)")
 INTL_PHONE = re.compile(r"(?<!\d)\+\d[\d\s-]{8,14}\d(?!\d)")
 LONG_ID = re.compile(r"(?<!\d)(?:\d{17}|\d{13}|\d{10})(?!\d)")
 NAME_EN = re.compile(r"(?i:\b(my name is|i am|this is|name:))\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})")

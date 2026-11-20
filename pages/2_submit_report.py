@@ -3,6 +3,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 import folium
 from floodguard import db, state, ui
+from floodguard.ui import BASEMAP
 from floodguard.config import get_settings
 from floodguard.geo import districts, district_centroid
 from floodguard.imaging import ImageRejected
@@ -34,7 +35,7 @@ with right:
         clicked = None
         st.session_state["picked"] = None
     m = folium.Map(location=clicked["pt"] if clicked else (c_lat, c_lon), zoom_start=11, tiles=None)
-    folium.TileLayer("CartoDB dark_matter", attr="© OpenStreetMap contributors © CARTO").add_to(m)
+    folium.TileLayer(BASEMAP, attr="© OpenStreetMap contributors © CARTO").add_to(m)
     pt = clicked["pt"] if clicked else (c_lat, c_lon)
     folium.Marker(pt, icon=folium.Icon(icon="crosshairs", prefix="fa", color="blue")).add_to(m)
     st.caption("Click the map to place the report (otherwise the district centre is used)")

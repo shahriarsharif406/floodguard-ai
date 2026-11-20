@@ -1,7 +1,7 @@
 """Orchestrates report submission and evidence refresh (used by UI and tests)."""
 from __future__ import annotations
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from . import db
 from .analysis import analyze
 from .dedupe import find_matches
@@ -20,7 +20,7 @@ def submit_report(conn, *, text: str, district: str | None, lat: float, lon: flo
     pbytes, ah = (validate_and_clean(*photo) if photo else (None, None))
     now = datetime.now(timezone.utc)
     if mode == "replay" and replay_date:
-        created = f"{replay_date}T{now.strftime('%H:%M')}"
+        created = f"{replay_date}T{(now + timedelta(hours=6)).strftime('%H:%M')}"   # BST like the seed reports
     else:
         created = now.strftime("%Y-%m-%dT%H:%M")
     lat_p, lon_p = blur(lat, lon)
@@ -37,7 +37,7 @@ def submit_report(conn, *, text: str, district: str | None, lat: float, lon: flo
     me["category"] = a.category.value
     matches = find_matches(me, cands)
     db.save_links(conn, rid, matches)
-    ev = build_evidence({"lat": lat, "lon": lon, "created_at": created}, live=live_evidence)
+    ev = build_evidence({"lat": lat_p, "lon": lon_p, "created_at": created}, live=live_evidence)
     db.save_evidence(conn, rid, ev)
     for m in matches:
         db.recompute_priority(conn, m["other_id"])
@@ -48,7 +48,7 @@ def submit_report(conn, *, text: str, district: str | None, lat: float, lon: flo
 
 def refresh_evidence(conn, report_id: int) -> dict:
     r = db.get_report(conn, report_id)
-    ev = build_evidence({"lat": r["lat"], "lon": r["lon"], "created_at": r["created_at"]}, live=True)
+    ev = build_evidence({"lat": r["lat_pub"], "lon": r["lon_pub"], "created_at": r["created_at"]}, live=True)
     db.save_evidence(conn, report_id, ev)
     db.audit(conn, report_id, "evidence_refreshed", Actor.SYSTEM, "evidence", ev["badge"])
     db.recompute_priority(conn, report_id)

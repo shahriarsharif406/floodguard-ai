@@ -7,7 +7,7 @@ from floodguard.config import get_settings  # noqa: E402
 
 st.markdown(f"<style>{ui.GLOBAL_CSS}</style>", unsafe_allow_html=True)
 state.init()
-state.conn()
+state.warm_evidence(state.conn())
 
 pages = [
     st.Page("pages/1_command_center.py", title="Command Center", icon="🛰️", url_path="command", default=True),

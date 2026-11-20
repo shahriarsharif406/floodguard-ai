@@ -9,8 +9,7 @@ from floodguard.gibs import sample_flood
 from floodguard.river import fetch_series
 
 D = Path(__file__).resolve().parent.parent / "data"
-ANCHORS = {"sylhet_surma": (24.89, 91.87), "sunamganj_surma": (25.07, 91.40), "companiganj_piyain": (25.05, 91.78),
-           "kanaighat_surma": (25.00, 92.26), "sheola_kushiyara": (24.86, 92.18), "derai_kalni": (24.79, 91.35)}
+from floodguard.river import ANCHORS
 out = {"anchors": {}, "meta": {"fetched_on": date.today().isoformat(), "source": "Open-Meteo Flood API, GloFAS v4"}}
 for name, (lat, lon) in ANCHORS.items():
     best = None

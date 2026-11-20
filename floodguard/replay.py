@@ -45,8 +45,8 @@ def seed(conn) -> None:
         me = next(c for c in cands if c["id"] == rid)
         me["category"] = a.category.value
         db.save_links(conn, rid, find_matches(me, cands))
-        ev = build_evidence({"lat": r["lat"], "lon": r["lon"], "created_at": r["created_at"]}, live=False,
-                            cache_key=f"{rid}|{r['created_at'][:10]}")
+        ev = build_evidence({"lat": lat_p, "lon": lon_p, "created_at": r["created_at"]}, live=False,
+                            cache_key=f"{r['id']}|{r['created_at'][:10]}")
         db.save_evidence(conn, rid, ev)
         db.audit(conn, rid, "created", Actor.SYSTEM, "seed", "SIMULATED seed report")
         db.audit(conn, rid, "ai_analyzed", Actor.AI, a.engine.value, a.summary_en)

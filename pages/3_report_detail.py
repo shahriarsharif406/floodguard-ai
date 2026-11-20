@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 from floodguard import db, state, ui
+from floodguard.ui import BASEMAP
 from floodguard.geo import nearest_shelter
 from floodguard.river import anomaly, series_for, sparkline_data
 from floodguard.service import refresh_evidence
@@ -8,7 +9,7 @@ from streamlit_folium import st_folium
 import folium
 
 conn = state.conn()
-qid = st.query_params.get("id") or st.session_state.get("detail_id")
+qid = st.session_state.get("detail_id") or st.query_params.get("id")
 ids = [r["id"] for r in db.list_reports(conn, mode=state.mode())] or []
 if not qid:
     if not ids:
@@ -82,7 +83,7 @@ with R:
                f'<br>GloFAS = modelled discharge, not a gauge reading.</div>')
     st.markdown(ui.card("Satellite & river evidence", ev_html), unsafe_allow_html=True)
     date = r["created_at"][:10]
-    ser = series_for(r["lat"], r["lon"], date, live=True)
+    ser = series_for(r["lat_pub"], r["lon_pub"], date, live=True)
     sp = sparkline_data(ser, date) if ser else None
     if sp:
         fig = go.Figure()
@@ -100,7 +101,7 @@ with R:
         st.markdown(ui.card("Nearest shelter (DEMO data)", f'{ui.e(sh["name"])} — {km:.1f} km straight-line'),
                     unsafe_allow_html=True)
     m = folium.Map(location=(r["lat_pub"], r["lon_pub"]), zoom_start=11, tiles=None)
-    folium.TileLayer("CartoDB dark_matter", attr="© OpenStreetMap contributors © CARTO").add_to(m)
+    folium.TileLayer(BASEMAP, attr="© OpenStreetMap contributors © CARTO").add_to(m)
     folium.CircleMarker((r["lat_pub"], r["lon_pub"]), radius=ui.URGENCY_RADIUS[r["urgency"]], fill=True,
                         fill_color=ui.URGENCY_COLOR[r["urgency"]], color="#FFB547").add_to(m)
     st_folium(m, height=220, use_container_width=True, returned_objects=[], key=f"mini_{rid}")

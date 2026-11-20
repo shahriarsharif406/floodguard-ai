@@ -95,6 +95,4 @@ def sample_flood(lat: float, lon: float, date: str, cache_key: str | None = None
             return {**classify_tile(data, px, py), "source": "live"}
         except Exception:  # noqa: BLE001
             pass
-    if status == 404:   # tile not generated for that date (no data)
-        return {"class": SatClass.CLOUD, "flood_frac": 0.0, "water_frac": 0.0, "nodata_frac": 1.0, "source": "live"}
     return {"class": SatClass.NA, "flood_frac": None, "water_frac": None, "nodata_frac": None, "source": "none"}

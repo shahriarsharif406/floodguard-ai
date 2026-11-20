@@ -13,8 +13,12 @@ sel = c1.multiselect("Districts", districts, default=districts)
 only_ver = c2.toggle("Only verified", value=True)
 view = [r for r in allr if (not sel or r["district"] in sel) and (r["status"] == "verified" or not only_ver)]
 if st.button("Generate SitRep", type="primary"):
-    agg_src = [r for r in allr if (not sel or r["district"] in sel)]     # unverified-critical stays visible, labelled
-    agg = sitrep.aggregate(agg_src if not only_ver else agg_src)
+    agg_src = [r for r in allr if (not sel or r["district"] in sel)]
+    agg = sitrep.aggregate([r for r in agg_src if r["status"] == "verified"] if only_ver else agg_src)
+    if only_ver:      # keep life-risk items visible, clearly marked as NOT verified
+        agg["critical_unverified"] = [{"id": r["id"], "place": r["upazila"] or r["district"], "summary": r["summary_en"]}
+                                      for r in agg_src if r["urgency"] == "critical" and r["status"] != "verified"]
+        agg["simulated"] = any(r["is_simulated"] for r in agg_src)
     md, eng, note = sitrep.generate(agg, bool(s.gemini_api_key), conn, st.session_state["live_calls"])
     if eng.value == "gemini_live":
         st.session_state["live_calls"] += 1
@@ -22,13 +26,14 @@ if st.button("Generate SitRep", type="primary"):
 res = st.session_state.get("sitrep")
 if res:
     md, eng, note = res
+    if "SIMULATED" not in md and any(r["is_simulated"] for r in allr):
+        md = "> **Includes SIMULATED data (event replay).**\n\n" + md
     st.markdown(ui.chip_engine("gemini_live" if eng == "gemini_live" else "rules").replace("Rule-based fallback",
                 "Template (no live AI)"), unsafe_allow_html=True)
     if note:
         st.caption(f"Template used: {note}")
-    st.markdown(f'<div class="fg-card">', unsafe_allow_html=True)
-    st.markdown(md)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown(md)
     d1, d2, d3 = st.columns(3)
     d1.download_button("Download .md", md, "situation_report.md", "text/markdown")
     rows = [{"id": r["id"], "created_at": r["created_at"], "simulated": bool(r["is_simulated"]), "status": r["status"],

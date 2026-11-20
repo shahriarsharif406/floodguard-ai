@@ -6,6 +6,7 @@ from .evidence import FOOTER, LABEL
 from .gibs import LAYERS, tile_url
 from .models import CATEGORY_LABEL
 
+BASEMAP = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
 URGENCY_COLOR = {"critical": "#FF5A5F", "high": "#FF9F43", "medium": "#F4D35E", "low": "#7FB7A4"}
 URGENCY_RADIUS = {"critical": 11, "high": 9, "medium": 7, "low": 6}
 
@@ -119,7 +120,7 @@ def category_label(c: str) -> str:
 def build_map(reports: list[dict], *, date: str, layers: dict[str, bool], shelters: list[dict] | None = None,
               exact: bool = False, center=(24.95, 91.65), zoom: int = 9) -> folium.Map:
     m = folium.Map(location=center, zoom_start=zoom, tiles=None, control_scale=True)
-    folium.TileLayer("CartoDB dark_matter", name="Base (dark)", attr="© OpenStreetMap contributors © CARTO").add_to(m)
+    folium.TileLayer(BASEMAP, name="Base (dark)", attr="© OpenStreetMap contributors © CARTO").add_to(m)
     for key, on in layers.items():
         if on and key in LAYERS:
             L = LAYERS[key]
@@ -141,7 +142,7 @@ def build_map(reports: list[dict], *, date: str, layers: dict[str, bool], shelte
             if r["is_simulated"] else ""
         pop = (f"{sim}<b>#{r['id']}</b> · {e(st_.replace('_', ' '))} · <b style='color:{col}'>{e(r['urgency'])}</b>"
                f"<br>{e(r['summary_en'])}<br><i>{e(LABEL.get(r['badge'] or 'unavailable'))}</i> · score {r['priority']}"
-               f"<br><a href='/report?id={r['id']}' target='_top'>Open details →</a>")
+               f"<br><span style='color:#888'>Open it from “Open report” (right panel).</span>")
         folium.CircleMarker((lat, lon), radius=URGENCY_RADIUS.get(r["urgency"], 6), fill=True, fill_color=col,
                             popup=folium.Popup(pop, max_width=260), tooltip=f"#{r['id']} {r['urgency']}", **kw).add_to(m)
     for s in (shelters or []):

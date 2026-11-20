@@ -32,7 +32,7 @@ def template(agg: dict) -> str:
     L = [f"# Situation Report{tag}", "", "## Overview",
          f"{agg['total']} reports in view · {agg['by_status'].get('verified', 0)} verified by humans · "
          f"{len(agg['critical_unverified'])} critical not yet verified · "
-         f"{agg['by_status'].get('pending', 0)} pending review.", "", "## Hotspots (top 5 by priority)"]
+         f"{agg['by_status'].get('pending', 0)} pending review.", "", "## Open hotspots (not yet decided, top 5 by priority)"]
     L += [f"- #{h['id']} {h['place']} — {h['urgency'].upper()} (score {h['priority']}): {h['summary']}"
           for h in agg["hotspots"]] or ["- none"]
     L += ["", "## Needs summary"]
@@ -69,7 +69,7 @@ def generate(agg: dict, allow_live: bool, conn=None, session_calls: int = 0) -> 
                       "medical advice. Use markdown headings.\n" + json.dumps(agg, ensure_ascii=False))
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{s.gemini_model}:generateContent"
             st, data, err = http_post(url, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                                            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 700}},
+                                            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 1500, "thinkingConfig": {"thinkingBudget": 0}}},
                                       headers={"x-goog-api-key": s.gemini_api_key}, timeout=max(s.gemini_timeout_s, 15))
             if st == 200 and data:
                 try:

@@ -30,7 +30,7 @@ def build_prompt(redacted_text: str, district: str | None) -> dict:
         "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
         "contents": [{"role": "user", "parts": [{"text": USER_TEMPLATE.format(
             district=district or "unknown", text=redacted_text)}]}],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 512, "responseMimeType": "application/json",
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 1024, "thinkingConfig": {"thinkingBudget": 0}, "responseMimeType": "application/json",
                              "responseSchema": ANALYSIS_JSON_SCHEMA},
     }
 
@@ -82,8 +82,12 @@ def call_gemini(redacted_text: str, district: str | None, s: Settings) -> Analys
     if not s.gemini_api_key:
         raise GeminiUnavailable("no API key")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{s.gemini_model}:generateContent"
-    status, data, err = http_post(url, build_prompt(redacted_text, district),
-                                  headers={"x-goog-api-key": s.gemini_api_key}, timeout=s.gemini_timeout_s)
+    body = build_prompt(redacted_text, district)
+    hdr = {"x-goog-api-key": s.gemini_api_key}
+    status, data, err = http_post(url, body, headers=hdr, timeout=s.gemini_timeout_s)
+    if status == 400:   # some models reject thinkingConfig: retry once without it
+        body["generationConfig"].pop("thinkingConfig", None)
+        status, data, err = http_post(url, body, headers=hdr, timeout=s.gemini_timeout_s)
     if status in (429,) or status >= 500:
         raise GeminiUnavailable("rate-limited")
     if status != 200 or not data:

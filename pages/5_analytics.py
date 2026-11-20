@@ -58,7 +58,7 @@ with b:
                                                                                       showgrid=False))
     else:
         fig.update_layout(title="River discharge vs reports",
-                          annotations=[dict(text="Run scripts/precompute_evidence.py to cache GloFAS data",
+                          annotations=[dict(text="River data not loaded yet — open a report to fetch it",
                                             showarrow=False, font=dict(color="#8FA3C0"))])
     st.plotly_chart(ui.style_fig(fig), width="stretch")
     st.caption("Correlation shown for context; reports are simulated." if state.mode() == "replay" else "Context only.")

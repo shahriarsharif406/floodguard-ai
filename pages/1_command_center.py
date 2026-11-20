@@ -28,9 +28,8 @@ with right:
                 st.session_state["playing"] = True
             st.rerun()
     else:
-        if st.button("▶ Switch to Replay", type="primary", width="stretch"):
-            st.session_state["mode_label"] = "Replay 2022"
-            st.rerun()
+        st.button("▶ Switch to Replay", type="primary", width="stretch", on_click=lambda: st.session_state.update(
+            mode_label="Replay 2022"))
     ds = state.dates()
     c1, c2 = st.columns(2)
     i = ds.index(date)
@@ -59,10 +58,10 @@ with right:
         f'<span class="score">{r["priority"]}</span></div>'
         for r in [x for x in reports if x["status"] not in ("verified", "rejected")][:5])
     st.markdown(ui.card("Priority queue (top 5)", rows or "<i>No open reports</i>"), unsafe_allow_html=True)
-    top = [x for x in reports if x["status"] not in ("verified", "rejected")][:5]
-    if top:
-        pick = st.selectbox("Open report", [t["id"] for t in top], format_func=lambda i: f"#{i}",
-                            label_visibility="collapsed")
+    if reports:
+        by_id = {x["id"]: x for x in reports}
+        pick = st.selectbox("Open report", [x["id"] for x in reports],
+                            format_func=lambda i: f"#{i} · {by_id[i]['urgency']} · {by_id[i]['upazila'] or by_id[i]['district']}")
         if st.button("Open details →", width="stretch"):
             state.goto_detail(pick)
 

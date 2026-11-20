@@ -10,25 +10,32 @@ from floodguard.redact import redact
 
 conn, s = state.conn(), get_settings()
 st.markdown("## Moderator desk")
-st.session_state.setdefault("pin_fail", 0)
-st.session_state.setdefault("pin_lock_until", 0.0)
+@st.cache_resource
+def _lockout() -> dict:       # server-wide, survives page reloads
+    return {"fail": 0, "until": 0.0}
+
+
+lk = _lockout()
 st.session_state.setdefault("mod_ok", False)
+if not s.moderator_pin:
+    st.error("Moderator PIN is not configured on this deployment (set MODERATOR_PIN in secrets).")
+    st.stop()
 
 if not st.session_state["mod_ok"]:
-    lock = st.session_state["pin_lock_until"] - time.time()
+    lock = lk["until"] - time.time()
     st.markdown(ui.banner("info", "Only a human moderator can verify or reject reports. AI can suggest, never decide."),
                 unsafe_allow_html=True)
     pin = st.text_input("Moderator PIN", type="password")
     if st.button("Unlock", type="primary", disabled=lock > 0):
         if hmac.compare_digest(pin.encode(), s.moderator_pin.encode()):
             st.session_state["mod_ok"] = True
-            st.session_state["pin_fail"] = 0
+            lk["fail"] = 0
             st.rerun()
         else:
-            st.session_state["pin_fail"] += 1
-            if st.session_state["pin_fail"] >= 5:
-                st.session_state["pin_lock_until"] = time.time() + 60
-                st.session_state["pin_fail"] = 0
+            lk["fail"] += 1
+            if lk["fail"] >= 5:
+                lk["until"] = time.time() + 60
+                lk["fail"] = 0
             st.error("Wrong PIN.")
     if lock > 0:
         st.warning(f"Too many attempts. Try again in {int(lock)} s.")
@@ -64,15 +71,19 @@ with L:
     st.caption(f"Priority {r['priority']} = U {u:.2f} × C {c:.2f} × E {e:.2f}")
     st.caption(f"AI suggestion: {r['category']}/{r['urgency']} — suggestion only ({r['engine']})")
 with R:
-    note = st.text_area("Note (required for Verify / Reject, 5–200 chars)", max_chars=200, height=90)
+    with st.form(f"decide_{pick}", clear_on_submit=True):
+        note = st.text_area("Note (required for Verify / Reject, 5–200 chars)", max_chars=200, height=90)
+        b1, b2, b3 = st.columns(3)
+        rev = b1.form_submit_button("Under review", width="stretch")
+        ver = b2.form_submit_button("Verify", type="primary", width="stretch")
+        rej = b3.form_submit_button("Reject", width="stretch")
     ok_note = 5 <= len(note.strip()) <= 200
-    b1, b2, b3 = st.columns(3)
-    if b1.button("Under review", width="stretch"):
-        db.set_status(conn, pick, Status.REVIEW, Actor.HUMAN, note, "moderator"); st.rerun()
-    if b2.button("Verify", type="primary", width="stretch", disabled=not ok_note):
-        db.set_status(conn, pick, Status.VERIFIED, Actor.HUMAN, note, "moderator"); st.rerun()
-    if b3.button("Reject", width="stretch", disabled=not ok_note):
-        db.set_status(conn, pick, Status.REJECTED, Actor.HUMAN, note, "moderator"); st.rerun()
+    if (ver or rej) and not ok_note:
+        st.error("A note of 5–200 characters is required to verify or reject.")
+    elif rev or ver or rej:
+        new = Status.REVIEW if rev else (Status.VERIFIED if ver else Status.REJECTED)
+        db.set_status(conn, pick, new, Actor.HUMAN, note, "moderator")
+        st.rerun()
     st.markdown("**Audit trail**")
     for a in reversed(db.get_audit(conn, pick)):
         arrow = f" {a['from_status']}→{a['to_status']}" if a["to_status"] else ""

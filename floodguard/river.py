@@ -12,6 +12,17 @@ API = "https://flood-api.open-meteo.com/v1/flood"
 CACHE = Path(__file__).resolve().parent.parent / "data" / "glofas_cache.json"
 _cache: dict | None = None
 _live_memo: dict = {}
+ANCHORS = {"sylhet_surma": (24.89, 91.87), "sunamganj_surma": (25.07, 91.40), "companiganj_piyain": (25.05, 91.78),
+           "kanaighat_surma": (25.00, 92.26), "sheola_kushiyara": (24.86, 92.18), "derai_kalni": (24.79, 91.35)}
+
+
+def _nearest_anchor(lat: float, lon: float, max_km: float = 25.0):
+    best, bd = None, 1e18
+    for n, (a, b) in ANCHORS.items():
+        d = haversine_m(lat, lon, a, b) / 1000
+        if d < bd:
+            best, bd = (n, a, b), d
+    return best if bd <= max_km else None
 
 
 def fetch_series(lat: float, lon: float, start: str, end: str) -> dict:
@@ -49,13 +60,17 @@ def series_for(lat: float, lon: float, date: str, live: bool = True) -> dict | N
         return s
     if not live:
         return None
+    anc = _nearest_anchor(lat, lon)
+    if anc:
+        lat, lon = anc[1], anc[2]      # one shared series per river anchor (fewer API calls)
     key = (round(lat, 2), round(lon, 2), date[:4])
-    if key in _live_memo:
+    if key in _live_memo and (_live_memo[key] is None or date in _live_memo[key]["time"]):
         return _live_memo[key]
     y = int(date[:4])
     out = None
+    end = f"{y}-12-31" if y < 2023 else date
     for dy in (0, 0.1, -0.1):      # nudge toward the river cell (API may not pick the river)
-        cand = fetch_series(lat + dy * 0.5, lon + dy * 0.5, f"{max(2003, y - 20)}-01-01", date)
+        cand = fetch_series(lat + dy * 0.5, lon + dy * 0.5, f"{max(2003, y - 20)}-01-01", end)
         if cand["time"] and any(v is not None for v in cand["q"]):
             if out is None or statistics.fmean([v or 0 for v in cand["q"]]) > statistics.fmean([v or 0 for v in out["q"]]):
                 out = cand
@@ -83,7 +98,7 @@ def _window(series: dict, date: str, half: int = 15) -> list[float]:
 def anomaly(series: dict | None, date: str) -> dict:
     na = {"class": RiverClass.NA, "q": None, "clim_median": None, "ratio": None, "pctl": None, "window": 0}
     if not series:
-        return {**na, "class": RiverClass.NO_CELL}
+        return na
     try:
         idx = series["time"].index(date)
     except ValueError:

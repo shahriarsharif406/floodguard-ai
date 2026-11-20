@@ -34,7 +34,7 @@ def get_settings() -> Settings:
         live_ai_session_cap=int(_secret("LIVE_AI_SESSION_CAP") or 3),
         live_ai_daily_cap=int(_secret("LIVE_AI_DAILY_CAP") or 150),
         gemini_timeout_s=float(_secret("GEMINI_TIMEOUT_S") or 8),
-        moderator_pin=_secret("MODERATOR_PIN") or "2468",
+        moderator_pin=_secret("MODERATOR_PIN") or ("" if on_cloud else "2468"),
         db_path=_secret("DB_PATH") or default_db,
         app_mode_default=_secret("APP_MODE_DEFAULT") or "replay",
     )

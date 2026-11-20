@@ -7,6 +7,45 @@ from .config import get_settings
 from .replay import DEFAULT_DATE, REPLAY_DATES
 
 
+import os
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+_warm: dict = {"started": False, "results": {}, "applied": set()}
+
+
+def _warm_worker(rows):
+    from .evidence import build_evidence
+
+    def one(r):
+        try:
+            _warm["results"][r["id"]] = build_evidence(
+                {"lat": r["lat_pub"], "lon": r["lon_pub"], "created_at": r["created_at"]}, live=True)
+        except Exception:  # noqa: BLE001
+            pass
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        list(ex.map(one, rows))
+
+
+def warm_evidence(c) -> None:
+    """Replay evidence (real NASA/GloFAS) is fetched once in the background if not cached in data/."""
+    if os.environ.get("FG_OFFLINE") == "1":
+        return
+    if not _warm["started"]:
+        rows = [dict(r) for r in c.execute(
+            "SELECT r.id, r.lat_pub, r.lon_pub, r.created_at FROM reports r JOIN evidence e ON e.report_id=r.id "
+            "WHERE r.mode='replay' AND e.badge='unavailable'")]
+        _warm["started"] = True
+        if rows:
+            threading.Thread(target=_warm_worker, args=(rows,), daemon=True).start()
+    for rid, ev in list(_warm["results"].items()):
+        if rid not in _warm["applied"]:
+            if ev["badge"] != "unavailable":
+                db.save_evidence(c, rid, ev)
+                db.recompute_priority(c, rid)
+            _warm["applied"].add(rid)
+
+
 @st.cache_resource
 def conn():
     s = get_settings()
@@ -18,7 +57,7 @@ def conn():
 
 def init() -> None:
     s = get_settings()
-    st.session_state.setdefault("mode_label", "Replay 2022" if s.app_mode_default == "replay" else "Live")
+    st.session_state.setdefault("mode_label", "Replay 2022" if s.app_mode_default == "replay" else "Live (today)")
     st.session_state.setdefault("replay_date", DEFAULT_DATE)
     st.session_state.setdefault("live_calls", 0)
     st.session_state.setdefault("playing", False)
@@ -33,7 +72,7 @@ def dates() -> list[str]:
     if mode() == "replay":
         return REPLAY_DATES
     t = date.today()
-    return [(t - timedelta(days=i)).isoformat() for i in range(14, -1, -1)]
+    return [(t - timedelta(days=i)).isoformat() for i in range(15, 0, -1)]
 
 
 def current_date() -> str:
@@ -51,5 +90,4 @@ def until() -> str | None:
 
 def goto_detail(report_id: int) -> None:
     st.session_state["detail_id"] = report_id
-    st.query_params["id"] = str(report_id)
     st.switch_page("pages/3_report_detail.py")
