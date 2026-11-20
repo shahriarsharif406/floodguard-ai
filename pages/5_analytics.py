@@ -44,6 +44,13 @@ with a:
 with b:
     anchors = (_load_cache().get("anchors") or {})
     ser = anchors.get("sunamganj_surma")
+    if not ser and state.mode() == "replay":
+        @st.cache_data(ttl=6 * 3600, show_spinner="Fetching GloFAS river discharge…")
+        def _glofas_june22():
+            from floodguard.river import ANCHORS, series_for
+            la, lo = ANCHORS["sunamganj_surma"]
+            return series_for(la, lo, "2022-06-20", live=True)
+        ser = _glofas_june22()
     fig = go.Figure()
     if ser and state.mode() == "replay":
         t, q = ser["time"], ser["q"]
