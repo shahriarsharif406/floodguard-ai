@@ -41,4 +41,4 @@ python, streamlit, sqlite, folium, plotly, pillow, nasa-gibs, glofas, open-meteo
 
 ## Links
 GitHub: https://github.com/shahriarsharif406/floodguard-ai · Live demo: _(URL)_ · Video: _(URL)_
-**Try it out notes:** Moderator PIN for judges: _(set in Streamlit secrets and write here)_. The app starts in Replay mode; community reports in it are SIMULATED.
+**Try it out notes:** Moderator desk: press "Open judge preview" (no PIN, replay data only). The app starts in Replay mode; community reports in it are SIMULATED.
