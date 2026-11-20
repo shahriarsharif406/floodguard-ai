@@ -4,7 +4,7 @@
 
 Built for the **STEM2Connect AI Hackathon 2026** · Track: Community Impact · Bangladesh-first, usable anywhere.
 
-> 🔗 Live demo: https://floodguard-ai-sylhet.streamlit.app/ · 🎬 Demo video: coming (link added before submission) · 📝 Devpost: https://stem2connect-online-hackathon.devpost.com/
+> 🔗 Live demo: https://floodguard-ai-sylhet.streamlit.app/ · 🎬 Demo video: https://youtu.be/6D0DD0p9DJQ · 📝 Devpost: https://stem2connect-online-hackathon.devpost.com/
 
 ![Command Center](docs/screenshots/01_command_center.png)
 
