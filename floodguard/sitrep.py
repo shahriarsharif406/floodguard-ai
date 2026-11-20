@@ -67,13 +67,14 @@ def generate(agg: dict, allow_live: bool, conn=None, session_calls: int = 0) -> 
             prompt = ("Write a concise situation report (≤250 words) for humanitarian coordinators from this JSON. "
                       "Keep counts exactly as given. Mark simulated data as SIMULATED. Do not predict, do not give "
                       "medical advice. Use markdown headings.\n" + json.dumps(agg, ensure_ascii=False))
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{s.gemini_model}:generateContent"
-            st, data, err = http_post(url, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                                            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 1500, "thinkingConfig": {"thinkingBudget": 0}}},
-                                      headers={"x-goog-api-key": s.gemini_api_key}, timeout=max(s.gemini_timeout_s, 15))
+            from .gemini import generate_content
+            st, data, err, _m = generate_content(s, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                                                     "generationConfig": {"temperature": 0.2, "maxOutputTokens": 2500}},
+                                                 max(s.gemini_timeout_s, 15))
             if st == 200 and data:
                 try:
-                    return data["candidates"][0]["content"]["parts"][0]["text"], Engine.LIVE, ""
+                    from .gemini import _text_of
+                    return _text_of(data), Engine.LIVE, ""
                 except (KeyError, IndexError):
                     reason = "invalid response"
             else:

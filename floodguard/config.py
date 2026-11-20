@@ -30,7 +30,7 @@ def get_settings() -> Settings:
     default_db = "/tmp/floodguard.db" if on_cloud else "./floodguard.db"
     return Settings(
         gemini_api_key=_secret("GEMINI_API_KEY") or None,
-        gemini_model=_secret("GEMINI_MODEL") or "gemini-2.5-flash",
+        gemini_model=_secret("GEMINI_MODEL") or "gemini-3.5-flash-lite",
         live_ai_session_cap=int(_secret("LIVE_AI_SESSION_CAP") or 3),
         live_ai_daily_cap=int(_secret("LIVE_AI_DAILY_CAP") or 150),
         gemini_timeout_s=float(_secret("GEMINI_TIMEOUT_S") or 8),

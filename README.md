@@ -41,7 +41,7 @@ Works with **no keys and no internet** in replay mode (rule-based + cached data)
 | Key | Default | Note |
 |---|---|---|
 | `GEMINI_API_KEY` | none | enables live Gemini; never commit it |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | set to a current free-tier Flash model |
+| `GEMINI_MODEL` | `gemini-3.5-flash-lite` | current Flash-Lite; falls back to 3.5-flash, 3.8-flash, 3.1-flash-lite (2.5 is closed to new keys) |
 | `MODERATOR_PIN` | `2468` | **change it** for any public deployment |
 | `LIVE_AI_SESSION_CAP` / `LIVE_AI_DAILY_CAP` | 3 / 150 | protects free-tier quota |
 

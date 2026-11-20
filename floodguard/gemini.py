@@ -30,7 +30,7 @@ def build_prompt(redacted_text: str, district: str | None) -> dict:
         "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
         "contents": [{"role": "user", "parts": [{"text": USER_TEMPLATE.format(
             district=district or "unknown", text=redacted_text)}]}],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 1024, "thinkingConfig": {"thinkingBudget": 0}, "responseMimeType": "application/json",
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 2048, "responseMimeType": "application/json",
                              "responseSchema": ANALYSIS_JSON_SCHEMA},
     }
 
@@ -78,26 +78,60 @@ def payload_to_analysis(p: dict, engine: Engine, model: str | None, created: str
                     engine=engine, model=model, created_at=created)
 
 
+FALLBACK_MODELS = ("gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash", "gemini-3.1-flash-lite")
+_WORKING: dict = {}   # remembers the (model, thinking-variant) that last worked
+
+
+def model_chain(s: Settings) -> list[str]:
+    out = [s.gemini_model]
+    out += [m for m in FALLBACK_MODELS if m not in out]
+    return out
+
+
+def generate_content(s: Settings, body: dict, timeout: float):
+    """POST to generateContent. Gemini 2.5 is closed to new keys, so try the configured model, then current
+    fallbacks. Thinking is kept minimal (thinkingLevel), with a retry without thinkingConfig if rejected.
+    Returns (status, data, err, model_used)."""
+    hdr = {"x-goog-api-key": s.gemini_api_key}
+    chain = model_chain(s)
+    if _WORKING.get("model") in chain:
+        chain.remove(_WORKING["model"]); chain.insert(0, _WORKING["model"])
+    status, data, err = 0, None, "no model"
+    for model in chain:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        for think in ({"thinkingLevel": "minimal"}, {"thinkingLevel": "low"}, None):
+            b = json.loads(json.dumps(body))
+            if think:
+                b["generationConfig"]["thinkingConfig"] = think
+            status, data, err = http_post(url, b, headers=hdr, timeout=timeout)
+            if status == 200 and data:
+                _WORKING["model"] = model
+                return status, data, err, model
+            if status in (429,) or status >= 500 or status in (401, 403):
+                return status, data, err, model     # not a model problem: stop here
+            # 400/404: bad thinking value or model unavailable to this key -> next variant / next model
+    return status, data, err, chain[-1]
+
+
+def _text_of(data: dict) -> str:
+    parts = data["candidates"][0]["content"]["parts"]
+    return "".join(p.get("text", "") for p in parts if not p.get("thought"))
+
+
 def call_gemini(redacted_text: str, district: str | None, s: Settings) -> Analysis:
     if not s.gemini_api_key:
         raise GeminiUnavailable("no API key")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{s.gemini_model}:generateContent"
     body = build_prompt(redacted_text, district)
-    hdr = {"x-goog-api-key": s.gemini_api_key}
-    status, data, err = http_post(url, body, headers=hdr, timeout=s.gemini_timeout_s)
-    if status == 400:   # some models reject thinkingConfig: retry once without it
-        body["generationConfig"].pop("thinkingConfig", None)
-        status, data, err = http_post(url, body, headers=hdr, timeout=s.gemini_timeout_s)
+    status, data, err, model = generate_content(s, body, s.gemini_timeout_s)
     if status in (429,) or status >= 500:
         raise GeminiUnavailable("rate-limited")
     if status != 200 or not data:
         raise GeminiUnavailable(err or "timeout")
     try:
-        text = data["candidates"][0]["content"]["parts"][0]["text"]
-        payload = validate_payload(json.loads(text))
+        payload = validate_payload(json.loads(_text_of(data)))
     except (KeyError, IndexError, ValueError, TypeError) as e:
         raise GeminiUnavailable("invalid response") from e
-    return payload_to_analysis(payload, Engine.LIVE, s.gemini_model,
+    return payload_to_analysis(payload, Engine.LIVE, model,
                                datetime.now(timezone.utc).isoformat(timespec="seconds"))
 
 
