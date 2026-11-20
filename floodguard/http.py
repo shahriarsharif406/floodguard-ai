@@ -27,7 +27,12 @@ def http_post(url: str, json_body: dict, headers: dict | None = None, timeout: f
     try:
         r = requests.post(url, json=json_body, headers=headers, timeout=timeout)
         if r.status_code != 200:
-            return r.status_code, None, f"http {r.status_code}"
+            msg = ""
+            try:
+                msg = (r.json().get("error", {}) or {}).get("message", "")[:140]
+            except Exception:  # noqa: BLE001
+                pass
+            return r.status_code, None, f"http {r.status_code}" + (f": {msg}" if msg else "")
         return 200, r.json(), None
     except Exception as e:  # noqa: BLE001
         return 0, None, type(e).__name__

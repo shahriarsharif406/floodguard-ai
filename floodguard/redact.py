@@ -11,7 +11,7 @@ INTL_PHONE = re.compile(r"(?<!\d)\+\d[\d\s-]{8,14}\d(?!\d)")
 LONG_ID = re.compile(r"(?<!\d)(?:\d{17}|\d{13}|\d{10})(?!\d)")
 NAME_EN = re.compile(r"(?i:\b(my name is|i am|this is|name:))\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})")
 HONORIFIC_EN = re.compile(r"\b(?:Mr|Mrs|Ms|Md|Mohammad|Dr)\.?\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?")
-NAME_BN = re.compile(r"(আমার নাম|নাম[:：]?)\s*([ঀ-৿]+(?:\s+[ঀ-৿]+){0,2})")
+NAME_BN = re.compile(r"(?<![ঀ-৿])(আমার নাম|নাম[:：]?)\s*([ঀ-৿]+(?:\s+[ঀ-৿]+){0,2})")
 HONORIFIC_BN = re.compile(r"(?:জনাব|মোঃ|মো\.|মোছাঃ|বেগম)\s*[ঀ-৿]+(?:\s+[ঀ-৿]+)?")
 
 
