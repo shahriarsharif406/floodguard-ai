@@ -112,7 +112,7 @@ def card(title: str, body_html: str) -> str:
 def top_bar(mode: str) -> str:
     badge = ('<span class="chip sim">REPLAY · SYLHET JUN 2022 · SIMULATED REPORTS</span>' if mode == "replay"
              else '<span class="chip eng">LIVE</span>')
-    return (f'<div class="fg-bar"><div class="fg-logo">◆ FLOOD<b>GUARD</b> AI <span class="bn">বন্যা সতর্কতা</span></div>'
+    return (f'<div class="fg-bar"><div class="fg-logo">◆ FLOOD<b>GUARD</b> AI</div>'
             f'<div>{badge}</div></div>')
 
 

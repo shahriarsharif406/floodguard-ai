@@ -21,7 +21,7 @@ pages = [
 nav = st.navigation(pages)
 
 with st.sidebar:
-    st.markdown('<div class="fg-logo">◆ FLOOD<b>GUARD</b> AI</div><div class="bn">বন্যা সতর্কতা</div>',
+    st.markdown('<div class="fg-logo">◆ FLOOD<b>GUARD</b> AI</div>',
                 unsafe_allow_html=True)
     st.radio("Mode", ["Replay 2022", "Live (today)"], key="mode_label", horizontal=True)
     s = get_settings()
