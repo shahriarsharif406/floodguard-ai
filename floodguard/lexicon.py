@@ -7,14 +7,15 @@ CATEGORY_ORDER = ["rescue_needed", "medical", "food_water", "shelter", "water_le
 KEYWORDS: dict[str, dict[str, list[str]]] = {
     "rescue_needed": {
         "en": ["trapped", "stuck", "on the roof", "rooftop", "rescue", "save us", "help us", "drowning", "drowned",
-               "missing", "boat needed", "need boat", "need a boat", "swept away", "can't get out", "stranded"],
+               "missing", "boat needed", "need boat", "need a boat", "swept away", "can't get out", "stranded",
+               "capsized", "in the water", "atke", "atkey", "atke achi", "bachao", "uddhar", "nouka lagbe", "chadey"],
         "bn": ["আটকা", "আটকে", "ছাদে", "চালে", "উদ্ধার", "বাঁচান", "বাঁচাও", "ডুবে যাচ্ছে", "ডুবছে", "নিখোঁজ",
-               "ভেসে গেছে", "ভেসে যাচ্ছে", "নৌকা দরকার", "নৌকা লাগবে", "বের হতে পারছি না"]},
+               "ভেসে গেছে", "ভেসে যাচ্ছে", "ভেসে গেছেন", "নৌকা দরকার", "নৌকা লাগবে", "বের হতে পারছি না"]},
     "medical": {
         "en": ["injured", "sick", "fever", "diarrhea", "diarrhoea", "snake bite", "snakebite", "pregnant", "labour",
-               "labor pain", "medicine", "unconscious", "bleeding"],
+               "labor pain", "medicine", "unconscious", "bleeding", "chest pain", "insulin", "first aid", "antiseptic"],
         "bn": ["আহত", "অসুস্থ", "জ্বর", "ডায়রিয়া", "পাতলা পায়খানা", "সাপে কাটা", "সাপের কামড়", "গর্ভবতী", "প্রসব",
-               "ওষুধ", "ঔষধ", "অজ্ঞান", "রক্ত"]},
+               "ওষুধ", "ঔষধ", "অজ্ঞান", "রক্ত", "অচেতন", "বুকে ব্যথা"]},
     "food_water": {
         "en": ["food", "hungry", "rice", "drinking water", "clean water", "safe water", "dry food", "baby food",
                "milk", "starving"],
@@ -43,7 +44,7 @@ KEYWORDS: dict[str, dict[str, list[str]]] = {
                "ঢল", "পাহাড়ি ঢল", "উপচে", "বন্যা"]},
 }
 
-CRITICAL_WORDS = ["drowning", "unconscious", "missing", "swept away", "snake bite", "snakebite", "bleeding", "labour",
+CRITICAL_WORDS = ["capsized", "in the water", "chest pain", "অচেতন", "ভেসে গেছেন", "atke", "drowning", "unconscious", "missing", "swept away", "snake bite", "snakebite", "bleeding", "labour",
                   "ডুবে যাচ্ছে", "নিখোঁজ", "ভেসে গেছে", "অজ্ঞান", "সাপে কাটা", "প্রসব", "গলা পানি"]
 VULNERABLE_WORDS = ["child", "children", "baby", "infant", "elderly", "old", "pregnant", "disabled",
                     "শিশু", "বাচ্চা", "বৃদ্ধ", "বয়স্ক", "গর্ভবতী", "প্রতিবন্ধী"]

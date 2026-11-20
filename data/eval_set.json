@@ -208,5 +208,257 @@
   "category": "medical",
   "urgency": "critical",
   "source": "synthetic"
+ },
+ {
+  "id": "H1",
+  "text": "Three children stuck on a tin roof in Derai, water still rising, we need a boat now",
+  "category": "rescue_needed",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H2",
+  "text": "আমার বাবা বন্যার পানিতে ভেসে গেছেন, তাকে খুঁজে পাচ্ছি না, সাহায্য করুন",
+  "category": "rescue_needed",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H3",
+  "text": "amra chadey atke achi, 12 jon, nouka lagbe, pani barche",
+  "category": "rescue_needed",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H4",
+  "text": "Pregnant woman in labour, road under water, no way to reach hospital in Jamalganj",
+  "category": "medical",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H5",
+  "text": "বুকে ব্যথা নিয়ে বৃদ্ধ অচেতন, নৌকা নেই, হাসপাতাল যাওয়া যাচ্ছে না",
+  "category": "medical",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H6",
+  "text": "Diabetic elderly man has run out of insulin, house flooded, Companiganj",
+  "category": "medical",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H7",
+  "text": "শিশুর জ্বর আর ডায়রিয়া, ওষুধ নেই, বন্যায় আটকে আছি",
+  "category": "medical",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H8",
+  "text": "No clean drinking water for 2 days, 60 families in Bishwanath, children getting sick",
+  "category": "food_water",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H9",
+  "text": "৩ দিন ধরে খাবার নেই, ৪০টা পরিবার, শিশু ও বৃদ্ধ আছে",
+  "category": "food_water",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H10",
+  "text": "amader gram e khabar pani shesh, 25 poribar, shishura kharap",
+  "category": "food_water",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H11",
+  "text": "Tube wells submerged in our para, we are boiling pond water, need purification tablets",
+  "category": "food_water",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H12",
+  "text": "Our house collapsed, 8 people sleeping in the open in the rain, Chhatak",
+  "category": "shelter",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H13",
+  "text": "স্কুলে আশ্রয় নিয়েছি কিন্তু জায়গা নেই, ২০০ জন, মেঝেতে পানি",
+  "category": "shelter",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H14",
+  "text": "The cyclone centre is full, need more space or tents for about 30 people",
+  "category": "shelter",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H15",
+  "text": "ghor dube geche, 15 jon khola akashe, kothao jaiga nai",
+  "category": "shelter",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H16",
+  "text": "The main road to Sunamganj town is cut at the bridge, buses stopped",
+  "category": "infrastructure",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H17",
+  "text": "বাঁধ ভেঙে গ্রামে পানি ঢুকছে, মেরামত দরকার",
+  "category": "infrastructure",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H18",
+  "text": "Embankment has a crack near our village, worried it may breach",
+  "category": "infrastructure",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H19",
+  "text": "রাস্তা ডুবে গেছে, গাড়ি চলছে না, বাজারে যেতে পারছি না",
+  "category": "infrastructure",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H20",
+  "text": "No electricity for 3 days in Zakiganj, mobile network also down",
+  "category": "power_telecom",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H21",
+  "text": "বিদ্যুৎ নেই দুইদিন, মোবাইলে নেটওয়ার্ক নেই, চার্জ শেষ",
+  "category": "power_telecom",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H22",
+  "text": "Hospital in Kanaighat has lost power, generator fuel is running out, patients on oxygen",
+  "category": "power_telecom",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H23",
+  "text": "Water is rising about 10 cm every hour at Sheola ghat",
+  "category": "water_level",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H24",
+  "text": "নদীর পানি বিপদসীমার উপর দিয়ে বইছে, ঘরের উঠান পর্যন্ত চলে এসেছে",
+  "category": "water_level",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H25",
+  "text": "Water level at our market has started to go down since this morning",
+  "category": "water_level",
+  "urgency": "low",
+  "source": "heldout2"
+ },
+ {
+  "id": "H26",
+  "text": "পানি কমতে শুরু করেছে, রাস্তা আবার দেখা যাচ্ছে",
+  "category": "water_level",
+  "urgency": "low",
+  "source": "heldout2"
+ },
+ {
+  "id": "H27",
+  "text": "Lost 30 goats, the cattle are standing in chest-deep water, need fodder",
+  "category": "livestock_crops",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H28",
+  "text": "ধান ক্ষেত পানির নিচে, গরুর খাবার নেই, ক্ষতি অনেক",
+  "category": "livestock_crops",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H29",
+  "text": "Some fish ponds overflowed but we have moved the cattle to higher ground",
+  "category": "livestock_crops",
+  "urgency": "low",
+  "source": "heldout2"
+ },
+ {
+  "id": "H30",
+  "text": "Volunteers have cleaned the school and families are returning home, thank you",
+  "category": "other",
+  "urgency": "low",
+  "source": "heldout2"
+ },
+ {
+  "id": "H31",
+  "text": "We are safe now, water has gone, only need cleaning supplies",
+  "category": "other",
+  "urgency": "low",
+  "source": "heldout2"
+ },
+ {
+  "id": "H32",
+  "text": "Boat capsized near Tahirpur, five people in the water, please send help",
+  "category": "rescue_needed",
+  "urgency": "critical",
+  "source": "heldout2"
+ },
+ {
+  "id": "H33",
+  "text": "আমরা ৫টি পরিবার দ্বীপের মতো আটকে আছি, নৌকা পেলে বের হতে পারি, এখনো নিরাপদ",
+  "category": "rescue_needed",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H34",
+  "text": "Relief did not reach Dharmapasha, 80 people without food and water, elderly and pregnant women among them",
+  "category": "food_water",
+  "urgency": "high",
+  "source": "heldout2"
+ },
+ {
+  "id": "H35",
+  "text": "Need first aid and antiseptic, several people have cuts from debris",
+  "category": "medical",
+  "urgency": "medium",
+  "source": "heldout2"
+ },
+ {
+  "id": "H36",
+  "text": "Our school building has water inside and the roof is leaking badly",
+  "category": "infrastructure",
+  "urgency": "medium",
+  "source": "heldout2"
  }
 ]
